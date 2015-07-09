@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+ 
+<style>
+#r1 { width: 400px; height: 400px; background: red; top:20px;  }
+#r2 { width: 300px; height: 300px; background: blue; top: -380px; left: 900px; }
+#r3 { width: 200px; height: 200px; background: green; top: -680px; left: 550px; }
+#r4 { width: 100px; height: 100px; background: grey; top: -580px; left: 700px; }
+</style>
+ 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+ 
+<script type="text/javascript">
+var ids = ["r2","r3","r4"];
+var i = 0;
+$( init );
+ 
+function init() {
+  $('#r1').draggable();
+  $( "#r1" ).droppable({
+    drop: function(event, ui) {
+	  var draggable = ui.draggable;
+      var id = draggable.attr("id");
+      var $this = $(this);
+      ui.draggable.position({
+        my: "center",
+        at: "center",
+        of: $this,
+      });
+	  if(ids[i] == id){
+		i++;
+		if(i == 3){
+			alert("Congratulations, you win");
+			location.reload();
+			i = 0;
+		}
+	  }
+	  else{
+		alert("Invalid move, try again");
+		location.reload();
+		i = 0;
+	  }
+    }
+		
+  });
+  $('#r2').draggable();
+  $('#r3').draggable();
+ $('#r4').draggable();
+}
+ 
+</script>
+ 
+</head>
+<body>
+ 
+<div id="content" style="height: 400px;">
+  <div id="r1"> Order all the other rectangles in here in descending order! </div>
+  <div id="r2"> </div>
+  <div id='r3'> </div>
+  <div id='r4'> </div>
+</div>
+ 
+</body>
+</html>
