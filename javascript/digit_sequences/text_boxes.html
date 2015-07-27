@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="us">
+<head>
+	<meta charset="utf-8">
+	<title>Text boxes</title>
+	<style>
+		body {
+			background-color: #b0c4de;
+		}
+		#scrollable {
+			word-wrap:break-word;
+			background-color: white;
+			width: 200px;
+			height: 200px;
+			overflow-y: scroll;
+			border: 1px solid black;
+		}
+		#text {
+			width: 200px;
+			height: 200px;
+		}
+	</style>
+</head>
+ 
+ <body background-color: blue;>
+	<textarea id="text" oninput="fun1()"></textarea>
+	<div id="scrollable"> </div>
+	
+	<script>
+		function fun1(){
+			var x = "";
+			var count;
+			var odd_max = [0,0,0];
+			var same = [0,0,0];
+			var pos = [];
+			var pos1 = [];
+			var counter = 0;
+			var counter1 = 0;
+			var i = 0;
+			var max = 0;
+			var max1 = 0;
+			var match = 0;
+			x = document.getElementById("text").value;
+			document.getElementById("scrollable").innerHTML = "";
+			for (count = 0;count < x.length; count++){
+				if(!isNaN(x.charAt(count))){
+					if(x.charAt(count) % 2 != 0){
+						if(odd_max[1] == 0 && odd_max[0] == 0){
+							odd_max[1] = count;
+							odd_max[0]++;
+						}
+						odd_max[2]++;
+						if(odd_max[2] == max){
+							counter++;
+							pos[counter] = odd_max[1];
+							counter++;
+							pos[counter] = count;
+						}
+						if(odd_max[2] > max){
+							counter = 0;
+							pos[counter] = odd_max[1];
+							counter++;
+							pos[counter] = count;
+							max = odd_max[2];
+						}
+					}
+					else{
+						odd_max = [0,0,0];
+					}
+					if(x.charAt(count) == x.charAt(count - 1)){
+						if(same[0] == 0 && same[1] == 0){
+							same[0] = count - 1;
+							same[1]++;
+						}
+						same[2]++;
+						if(same[2] == max1){
+							counter1++;
+							pos1[counter1] = same[0];
+							counter1++;
+							pos1[counter1] = count;
+						}
+						if(same[2] > max1){
+							counter1 = 0;
+							pos1[counter1] = same[0];
+							counter1++;
+							pos1[counter1] = count;
+							max1 = same[2];
+						}
+					}
+					else{
+						same = [0,0,0];
+					}
+				}
+				else{
+					odd_max = [0,0,0];
+					same = [0,0,0];
+				}
+			}
+			for (count = 0;count <= x.length; count++){
+				match = 0;
+				if(isNaN(x.charAt(count))){
+					document.getElementById("scrollable").innerHTML += x.charAt(count).fontcolor("grey");
+					match = 1;
+				}
+				for(i = 0; i <= counter1; i+=2){
+					for(max = pos1[i]; max <= pos1[i + 1]; max++){
+						if(max == count && match != 1){
+							for(same[0] = 0; same[0] <= counter; same[0]+=2){
+								for(max1 = pos[same[0]]; max1 <= pos[same[0] + 1]; max1++){
+									if(max1 == count && match != 1){
+										document.getElementById("scrollable").innerHTML += x.charAt(count).fontcolor("red").fontsize(4);
+										match = 1;
+									}
+								}
+							}
+							if(match != 1){
+								document.getElementById("scrollable").innerHTML += x.charAt(count).fontsize(4);
+								match = 1;
+							}
+						}
+					}
+				}
+				for(i = 0; i <= counter; i+=2){
+					for(max = pos[i]; max <= pos[i + 1]; max++){
+						if(max == count && match != 1){
+							document.getElementById("scrollable").innerHTML += x.charAt(count).fontcolor("red");
+							match = 1;
+						}
+					}
+				}
+				if(match == 0){
+					document.getElementById("scrollable").innerHTML += x.charAt(count);
+				}
+			}
+		}
+	</script>
+</body>	
