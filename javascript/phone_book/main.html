@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+
+<body onload="load()">
+
+<button id="addcontact" type="button" onclick="window.location.href='newrecord.html'">Нов запис</button>
+<button id = "importcontact" type="button" onclick="window.location.href='import.html'">Импортиране на данни</button>
+
+<table id="myTable" style="width:50%" border="solid">
+  <tr>
+    <td>Телефон</td>
+    <td>Име</td>		
+    <td>Населено място</td>
+	<td>Пол</td>
+	<td>Линкове</td>
+  </tr>
+</table>
+
+<script>
+function load(){
+	var newRow;
+	var row_counter = 1;
+	var cell_counter = 0;
+	var newCell;
+	var table = document.getElementById("myTable");
+	//localStorage.setItem("phone_book", "");
+	//localStorage.setItem("phone", "");
+	//localStorage.setItem("name", "");
+	//localStorage.setItem("redact", "");
+	var storage = localStorage.getItem("phone_book");
+	if(storage == null){
+		localStorage.setItem("phone_book", "");
+		storage = localStorage.getItem("phone_book");
+	}
+	for(count = 0; count < storage.length - 1; count++){
+		if(count === 0){
+			newRow = table.insertRow(1);
+			newCell = newRow.insertCell(0);
+		}
+		if(storage.charAt(count) === "/"){
+			if(storage.charAt(count + 1)!== null && storage.charAt(count + 1) !== "/"){
+				row_counter++;
+				newRow = table.insertRow(row_counter);
+				newCell = newRow.insertCell(0);
+				cell_counter = 0;
+			}
+		}
+		if(storage.charAt(count) !== "/" && storage.charAt(count) !== "	" && cell_counter < 4){
+			newCell.innerHTML += storage.charAt(count);
+		}
+		if(storage.charAt(count) === "	"){
+			cell_counter++;
+			if(cell_counter < 4){
+				newCell = newRow.insertCell(cell_counter);
+			}
+			if(cell_counter === 4){
+				newCell = newRow.insertCell(cell_counter);
+				newCell.innerHTML += "<a id='" + row_counter + "' onclick='Review(id)' href='review.html'>Преглед</a> <br></br> <a href='redact.html' id='" + row_counter + "' onclick='Redact(id)'>Редакция</a> <br></br> <a href='' id='" + row_counter + "' onclick='Delete(id)'>Изтриване</a>";
+				newCell = row_counter - 1;
+			}
+		}
+	}
+}
+
+function Review(id){
+	var storage = localStorage.getItem("phone_book");
+	localStorage.setItem("redact", "");
+	localStorage.setItem("redact-id", id);
+	var count;
+	var counter = 0;
+	for(count = 0; count < storage.length; count++){
+		if(storage.charAt(count) === "/"){
+			counter++;
+		}
+		if(counter === id - 1 && storage.charAt(count) !== "/"){
+			localStorage["redact"] += storage.charAt(count);
+		}
+	}
+}
+function Redact(id){
+	
+	var storage = localStorage.getItem("phone_book");
+	localStorage.setItem("redact", "");
+	localStorage.setItem("redact-id", id);
+	var count;
+	var counter = 0;
+	for(count = 0; count < storage.length; count++){
+		if(storage.charAt(count) === "/"){
+			counter++;
+		}
+		if(counter === id - 1 && storage.charAt(count) !== "/"){
+			localStorage["redact"] += storage.charAt(count);
+		}
+	}
+}
+function Delete(id){
+	var storage = localStorage.getItem("phone_book");
+	var count;
+	var counter = 0;
+	var deleted_row = "";
+	for(count = 0; count < storage.length; count++){
+		if(counter !== id - 1){
+			deleted_row += storage.charAt(count);
+		}
+		if(storage.charAt(count) === "/"){
+			counter++;
+		}
+	}
+	localStorage.setItem("phone", "");
+	localStorage.setItem("name", "");
+	localStorage["phone_book"] = deleted_row;
+	storage = localStorage["phone_book"];
+	for(count = 0; count < storage.length; count++){
+		if(storage.charAt(count) === "/"){
+			counter = 0;
+			localStorage["phone"] += " ";
+			localStorage["name"] += "	";
+		}
+		if(storage.charAt(count) === "	"){
+			counter++;
+		}
+		if(storage.charAt(count) !== "	" && storage.charAt(count) !== "/" && counter === 0){
+			localStorage["phone"] += storage.charAt(count);
+		}
+		if(storage.charAt(count) !== "	" && storage.charAt(count) !== "/" && counter === 1){
+			localStorage["name"] += storage.charAt(count);
+		}
+	}
+}
+</script>
+
+</body>
+</html>

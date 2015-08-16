@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body onload="Redact()">
+<button id="redactbutton" type="button" onclick="Done(); window.location.href='main.html'">Готово</button>
+<table id="redactTable" style="width:50%" border="solid">
+  <tr>
+    <td>Телефон</td>
+    <td>Име</td>		
+    <td>Населено място</td>
+	<td>Пол</td>
+	<td>Зодия</td>
+	<td>Бележки</td>
+  </tr>
+  <tr>
+	<td><textarea id="phone" maxlength="13"></textarea></td>
+	<td><textarea id="name" maxlength="13"></textarea></td>
+	<td><textarea id="village" maxlength="13"></textarea></td>
+	<td><textarea id="sex" maxlength="13"></textarea></td>
+	<td><select id="sign">
+		<option id="sign1" value=""></option>
+		<option value="Овен">Овен</option>
+		<option value="Телец">Телец</option>
+		<option value="Близнаци">Близнаци</option>
+		<option value="Рак">Рак</option>
+		<option value="Лъв">Лъв</option>
+		<option value="Дева">Дева</option>
+		<option value="Везни">Везни</option>
+		<option value="Скорпион">Скорпион</option>
+		<option value="Стрелец">Стрелец</option>
+		<option value="Козирог">Козирог</option>
+		<option value="Водолей">Водолей</option>
+		<option value="Риби">Риби</option>
+	</select></td>
+	<td><textarea id="notes" maxlength="13"></textarea></td>
+  </tr>
+</table>
+
+</body>
+
+<script>
+function Redact(){
+	var count;
+	var counter = 0;
+	var end = false
+	storage = localStorage.getItem("redact");
+	for(count = 0; count < storage.length; count++){
+		if(storage.charAt(count) === "/"){
+			end = true;
+		}
+		if(end === false){
+			if(storage.charAt(count) === "	"){
+				counter++;
+				count++;
+			}
+			switch(counter){
+			
+			case 0: 
+				document.getElementById("phone").innerHTML += storage.charAt(count);
+				break;
+				
+			case 1: 
+				document.getElementById("name").innerHTML += storage.charAt(count);
+				break;
+				
+			case 2: 
+				document.getElementById("village").innerHTML += storage.charAt(count);
+				break;
+				
+			case 3: 
+				document.getElementById("sex").innerHTML += storage.charAt(count);
+				break;
+				
+			case 4: 
+				document.getElementById("sign1").innerHTML += storage.charAt(count);
+				document.getElementById("sign1").value += storage.charAt(count);
+				break;
+				
+			case 5: 
+				document.getElementById("notes").innerHTML += storage.charAt(count);
+				break;
+			}
+		}
+	}
+}
+
+function Done(){
+	var error = false;
+	var new_record = "";
+	var new_storage = "";
+	var temporarily_phone;
+	var temporarily_name;
+	var dubbing;
+	var count;
+	var counter = 0;
+	var storage;
+	var written = false;
+	var id = Number(localStorage["redact-id"]);
+	temporarily_phone = document.getElementById("phone").value;
+	if(temporarily_phone === null){
+		error = true;
+	}
+	if (temporarily_phone.charAt(0) !== "+" && temporarily_phone.charAt(0) !== "0"){
+		error = true;
+	}
+	for(count = 0; count <= temporarily_phone.length; count++){
+		if(isNaN(temporarily_phone.charAt(count))){
+			error = true;
+		}
+	}
+	if(temporarily_phone.length < 5){
+		error = true;
+	}
+	new_record += "/" + document.getElementById("phone").value + "	";
+	temporarily_name = document.getElementById("name").value;
+	if(temporarily_name === null){
+		error == true;
+	}
+	new_record += document.getElementById("name").value + "	";
+	new_record += document.getElementById("village").value + " 	";
+	if(document.getElementById("sex").value == ""){
+		error = true;
+	}
+	new_record += document.getElementById("sex").value + "	";
+	if(document.getElementById("sign").value === ""){
+		if(document.getElementById("sign1").value === ""){
+			new_record += " 	";
+		}
+		else{
+			new_record += document.getElementById("sign1").value + "	";
+		}
+	}
+	else{
+		new_record += document.getElementById("sign").value + "	";
+	}
+	new_record += document.getElementById("notes").value + "	";
+	if(error === false){
+		storage = localStorage["phone_book"];
+		for(count = 0; count <= storage.length; count++){
+			if(storage.charAt(count) === "/"){
+				counter++;
+			}
+			if(counter !== id - 1){
+				new_storage += storage.charAt(count);
+			}
+			if(counter === id - 1 && written === false){
+				new_storage += new_record;
+				written = true;
+			}
+		}
+		localStorage["phone_book"] = new_storage;
+		localStorage["name"] = new_storage + "	";
+	}
+	else{
+		alert("invalid data");
+	}
+	counter = 0;
+	localStorage.setItem("phone", "");
+	localStorage.setItem("name", "");
+	for(count = 0; count < storage.length; count++){
+		if(storage.charAt(count) === "/"){
+			counter = 0;
+			localStorage["phone"] += " ";
+			localStorage["name"] += "	";
+		}
+		if(storage.charAt(count) === "	"){
+			counter++;
+		}
+		if(storage.charAt(count) !== "	" && storage.charAt(count) !== "/" && counter === 0){
+			localStorage["phone"] += storage.charAt(count);
+		}
+		if(storage.charAt(count) !== "	" && storage.charAt(count) !== "/" && counter === 1){
+			localStorage["name"] += storage.charAt(count);
+		}
+	}
+}
+</script>
+
+</html>

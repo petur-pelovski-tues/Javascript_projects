@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body onload="Review()">
+<button id="reviewredact" type="button" onclick="window.location.href='redact.html'">Редакция</button>
+<button id="reviewdelete" type="button" onclick="Delete(); window.location.href='main.html'">Изтриване</button>
+<table id="reviewTable" style="width:50%" border="solid">
+  <tr>
+    <td>Телефон</td>
+    <td>Име</td>		
+    <td>Населено място</td>
+	<td>Пол</td>
+	<td>Зодия</td>
+	<td>Бележки</td>
+  </tr>
+</table>
+
+</body>
+<script>
+
+function Review(){
+	var table = document.getElementById("reviewTable");
+	var newRow = table.insertRow(1);
+	var cell_counter = 0;
+	var newCell = newRow.insertCell(0);
+	var count;
+	var end = false;
+	storage = localStorage.getItem("redact");
+	for(count = 0; count < storage.length; count++){
+		if(storage.charAt(count) === "/"){
+			end = true;
+			alert("neshto");
+		}
+		if(storage.charAt(count) === "	" && cell_counter < 5){
+			cell_counter++;
+			newCell = newRow.insertCell(cell_counter);
+			count++;
+		}
+		if(end === false){
+			newCell.innerHTML += storage.charAt(count);
+		}
+	}
+}
+function Delete(){
+	var storage = localStorage.getItem("phone_book");
+	var count;
+	var counter = 0;
+	var deleted_row = "";
+	var id = Number(localStorage["redact-id"]);
+	for(count = 0; count < storage.length; count++){
+		if(counter !== id - 1){
+			deleted_row += storage.charAt(count);
+		}
+		if(storage.charAt(count) === "/"){
+			counter++;
+		}
+	}
+	localStorage.setItem("phone", "");
+	localStorage.setItem("name", "");
+	localStorage["phone_book"] = deleted_row;
+	storage = localStorage["phone_book"];
+	for(count = 0; count < storage.length; count++){
+		if(storage.charAt(count) === "/"){
+			counter = 0;
+			localStorage["phone"] += " ";
+			localStorage["name"] += "	";
+		}
+		if(storage.charAt(count) === "	"){
+			counter++;
+		}
+		if(storage.charAt(count) !== "	" && storage.charAt(count) !== "/" && counter === 0){
+			localStorage["phone"] += storage.charAt(count);
+		}
+		if(storage.charAt(count) !== "	" && storage.charAt(count) !== "/" && counter === 1){
+			localStorage["name"] += storage.charAt(count);
+		}
+	}
+}
+</script>
+</html>

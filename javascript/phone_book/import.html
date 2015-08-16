@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<button id="importbutton" type="button" onclick="Import(); window.location.href='main.html'">Импортирай</button>
+</head>
+<body>
+
+<textarea onclick="document.getElementById('import').innerHTML = ''" rows="20" cols="70" id="import" >Въведете вашите контакти тук</textarea>
+
+</body>
+<script>
+function Import(){
+	var text_box_data;
+	var count;
+	var counter = 0;
+	var phones = "";
+	var names = "";
+	var storage;
+	text_box_data = document.getElementById("import").value;
+	text_box_data = text_box_data.replace(/(\r\n|\n|\r)/gm, '/');
+	localStorage["phone_book"] += text_box_data + "/";
+	if(localStorage.getItem("phone") === null){
+		localStorage.setItem("phone", phones);
+	}
+	if(localStorage.getItem("name") === null){
+		localStorage.setItem("name", names);
+	}
+	storage = localStorage["phone_book"];
+	for(count = 0; count < storage.length; count++){
+		if(storage.charAt(count) === "/"){
+			counter = 0;
+			localStorage["phone"] += " ";
+			localStorage["name"] += "	";
+		}
+		if(storage.charAt(count) === "	"){
+			counter++;
+		}
+		if(storage.charAt(count) !== "	" && storage.charAt(count) !== "/" && counter === 0){
+			localStorage["phone"] += storage.charAt(count);
+		}
+		if(storage.charAt(count) !== "	" && storage.charAt(count) !== "/" && counter === 1){
+			localStorage["name"] += storage.charAt(count);
+		}
+	}
+}
+</script>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<button id="recordbutton" type="button" onclick="NewRecord(); window.location.href='main.html'">Запиши</button>
+<table id="recordTable" style="width:50%" border="solid">
+  <tr>
+    <td>Телефон</td>
+    <td>Име</td>		
+    <td>Населено място</td>
+	<td>Пол</td>
+	<td>Зодия</td>
+	<td>Бележки</td>
+  </tr>
+  <tr>
+    <td><textarea id="phone" maxlength="13"></textarea></td>
+    <td><textarea id="name" maxlength="30"></textarea></td>		
+    <td><textarea id="village" maxlength="30"></textarea></td>
+	<td><textarea id="sex"></textarea></td>
+	<td><select id="sign">
+		<option value=""></option>
+		<option value="Овен">Овен</option>
+		<option value="Телец">Телец</option>
+		<option value="Близнаци">Близнаци</option>
+		<option value="Рак">Рак</option>
+		<option value="Лъв">Лъв</option>
+		<option value="Дева">Дева</option>
+		<option value="Везни">Везни</option>
+		<option value="Скорпион">Скорпион</option>
+		<option value="Стрелец">Стрелец</option>
+		<option value="Козирог">Козирог</option>
+		<option value="Водолей">Водолей</option>
+		<option value="Риби">Риби</option>
+	</select></td>
+	<td><textarea id="note" maxlength="500"></textarea></td>
+  </tr>
+</table>
+
+</body>
+<script>
+function NewRecord(){
+	var error = false;
+	var new_record = "";
+	var temporarily_phone;
+	var temporarily_name;
+	var dubbing;
+	var count;
+	temporarily_phone = document.getElementById("phone").value;
+	if(temporarily_phone === null){
+		error = true;
+	}
+	if (temporarily_phone.charAt(0) !== "+" && temporarily_phone.charAt(0) !== "0"){
+		error = true;
+	}
+	for(count = 0; count <= temporarily_phone.length; count++){
+		if(isNaN(temporarily_phone.charAt(count))){
+			error = true;
+		}
+	}
+	if(localStorage.getItem("phone") !== null){
+		dubbing = localStorage.getItem("phone").split(" ");
+		for(count = 0; count <= dubbing.length; count++){
+			if(dubbing[count] === temporarily_phone){
+				error = true;
+			}
+		}
+	}
+	if(temporarily_phone.length < 5){
+		error = true;
+	}
+	new_record += document.getElementById("phone").value + "	";
+	temporarily_name = document.getElementById("name").value;
+	if(temporarily_name === null){
+		error == true;
+	}
+	if(localStorage["name"] !== null){
+		dubbing = localStorage.getItem("name").split("	");
+		for(count = 0; count <= dubbing.length; count++){
+			if(dubbing[count] === temporarily_name){
+				error = true;
+			}
+		}
+	}
+	new_record += document.getElementById("name").value + "	";
+	new_record += document.getElementById("village").value + " 	";
+	if(document.getElementById("sex").value == ""){
+		error = true;
+	}
+	new_record += document.getElementById("sex").value + "	";
+	new_record += document.getElementById("sign").value + " 	";
+	new_record += document.getElementById("note").value + "	" + "/";
+	if(error === false){
+		localStorage["phone_book"] += new_record;
+		if(localStorage.getItem("name") === null){
+			localStorage.setItem("name", temporarily_name);
+			localStorage.setItem("phone", temporarily_phone);
+		}
+		else{
+			localStorage["phone"] += temporarily_phone + " ";
+			localStorage["name"] += temporarily_name + "	";
+		}
+	}
+	else{
+		alert("invalid data");
+	}
+}
+</script>
+</html>
